@@ -38,4 +38,11 @@ public class Queue<T> {
 			throw new Exception ("Queue is empty!");
 		return list.getLast().getData();
 	}
+
+	@Override
+	public String toString() {
+		return "Queue front to rear:\n" + list;
+	}
+	
+	
 }
