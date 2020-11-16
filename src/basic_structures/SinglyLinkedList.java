@@ -61,20 +61,20 @@ public class SinglyLinkedList<T> {
 		}
 		size++;
 	}
-	
+
 	public void insertAtPosition(T data, int position) throws Exception {
-		if(position < 0 || position > size)
+		if (position < 0 || position > size)
 			throw new Exception("Invalid position!");
-		if(position == 0)
+		if (position == 0)
 			insertAtStart(data);
-		else if(position == size)
+		else if (position == size)
 			insertAtEnd(data);
 		else {
 			int index = 0;
 			SinglyNode<T> temp = head, next;
-			while(temp.getNext()!=null) {
+			while (temp.getNext() != null) {
 				index++;
-				if(index == position) {
+				if (index == position) {
 					next = temp.getNext();
 					SinglyNode<T> current = new SinglyNode<>(data);
 					temp.setNext(current);
@@ -111,7 +111,7 @@ public class SinglyLinkedList<T> {
 		}
 		size--;
 	}
-	
+
 	public void deleteAtPosition(int position) throws Exception {
 		if (size == 0)
 			throw new Exception("List is empty!");
@@ -124,9 +124,9 @@ public class SinglyLinkedList<T> {
 		else {
 			int index = 0;
 			SinglyNode<T> temp = head, next;
-			while(temp.getNext()!=null) {
+			while (temp.getNext() != null) {
 				index++;
-				if(index == position) {
+				if (index == position) {
 					next = temp.getNext().getNext();
 					temp.setNext(next);
 					break;
@@ -138,7 +138,14 @@ public class SinglyLinkedList<T> {
 
 	@Override
 	public String toString() {
-		return "SinglyLinkedList [head=" + head.getData() + ", last=" + last.getData() + ", size=" + size + "]";
+		String result = "";
+		SinglyNode<T> temp = head;
+		while (temp.getNext() != null) {
+			result += temp.getData() + " ";
+			temp = temp.getNext();
+		}
+		result += temp.getData() + "\n";
+		return result;
 	}
 
 }
