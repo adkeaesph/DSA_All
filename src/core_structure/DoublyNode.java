@@ -11,9 +11,13 @@ public class DoublyNode<T> {
 		this.previous = null;
 	}
 	
-	public DoublyNode(T data, DoublyNode<T> next, DoublyNode<T> previous) {
+	public DoublyNode(T data) {
 		this();
 		this.data = data;
+	}
+	
+	public DoublyNode(T data, DoublyNode<T> next, DoublyNode<T> previous) {
+		this(data);
 		this.next = next;
 		this.previous = previous;
 	}

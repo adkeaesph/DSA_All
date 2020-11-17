@@ -1,38 +1,38 @@
 package basic_structures;
 
-import core_structure.SinglyNode;
+import core_structure.DoublyNode;
 
-public class SinglyLinkedList<T> {
-	private SinglyNode<T> head;
-	private SinglyNode<T> last;
+public class DoublyLinkedList<T> {
+	private DoublyNode<T> head;
+	private DoublyNode<T> last;
 	private int size;
-
-	public SinglyLinkedList() {
-		head = new SinglyNode<>(); // only single node with no data represents that an empty list has come into
+	
+	public DoublyLinkedList() {
+		head = new DoublyNode<>(); 	// only single node with no data represents that an empty list has come into
 									// existence.
 		last = head;
 		size = 0;
 	}
-
-	public SinglyLinkedList(T headData) {
+	
+	public DoublyLinkedList(T data) {
 		this();
-		head.setData(headData); // singleton list
+		head.setData(data);			//singleton list
 		size++;
 	}
 
-	public SinglyNode<T> getHead() {
+	public DoublyNode<T> getHead() {
 		return head;
 	}
 
-	public void setHead(SinglyNode<T> head) {
+	public void setHead(DoublyNode<T> head) {
 		this.head = head;
 	}
 
-	public SinglyNode<T> getLast() {
+	public DoublyNode<T> getLast() {
 		return last;
 	}
 
-	public void setLast(SinglyNode<T> last) {
+	public void setLast(DoublyNode<T> last) {
 		this.last = last;
 	}
 
@@ -40,6 +40,14 @@ public class SinglyLinkedList<T> {
 		return size;
 	}
 
+	public void setSize(int size) {
+		this.size = size;
+	}
+	
+	public boolean isEmpty() {
+		return size == 0;
+	}
+	
 	public boolean isFull() {
 		return size == Integer.MAX_VALUE;
 	}
@@ -47,29 +55,31 @@ public class SinglyLinkedList<T> {
 	public void insertAtStart(T data) throws Exception {
 		if(isFull())
 			throw new Exception("List is full!");
-		if (size == 0)
+		if(size == 0) 
 			head.setData(data);
 		else {
-			SinglyNode<T> newHead = new SinglyNode<>(data);
+			DoublyNode<T> newHead = new DoublyNode<>(data);
 			newHead.setNext(head);
+			head.setPrevious(newHead);
 			head = newHead;
 		}
 		size++;
 	}
-
+	
 	public void insertAtEnd(T data) throws Exception {
 		if(isFull())
 			throw new Exception("List is full!");
 		if (size == 0)
 			head.setData(data);
 		else {
-			SinglyNode<T> newLast = new SinglyNode<>(data);
+			DoublyNode<T> newLast = new DoublyNode<>(data);
 			last.setNext(newLast);
+			newLast.setPrevious(last);
 			last = last.getNext();
 		}
 		size++;
 	}
-
+	
 	public void insertAtPosition(T data, int position) throws Exception {
 		if(isFull())
 			throw new Exception("List is full!");
@@ -81,47 +91,66 @@ public class SinglyLinkedList<T> {
 			insertAtEnd(data);
 		else {
 			int index = 0;
-			SinglyNode<T> temp = head, next;
-			while (temp.getNext() != null) {
-				index++;
-				if (index == position) {
-					next = temp.getNext();
-					SinglyNode<T> current = new SinglyNode<>(data);
-					temp.setNext(current);
-					current.setNext(next);
-					break;
+			if(position < size/2) {
+				DoublyNode<T> temp = head, next;
+				while (temp.getNext() != null) {
+					index++;
+					if (index == position) {
+						next = temp.getNext();
+						DoublyNode<T> current = new DoublyNode<>(data);
+						temp.setNext(current);
+						current.setPrevious(temp);
+						current.setNext(next);
+						next.setPrevious(current);
+						break;
+					}
+					temp = temp.getNext();
 				}
-				temp = temp.getNext();
+			} else {
+				position = size - position;
+				DoublyNode<T> temp = last, previous;
+				while (temp.getPrevious() != null) {
+					index++;
+					if (index == position) {
+						previous = temp.getPrevious();
+						DoublyNode<T> current = new DoublyNode<>(data);
+						temp.setPrevious(current);
+						current.setNext(temp);
+						current.setPrevious(previous);
+						previous.setNext(current);
+						break;
+					}
+					temp = temp.getNext();
+				}
 			}
 		}
 	}
-
+	
 	public void deleteAtStart() throws Exception {
 		if (size == 0)
 			throw new Exception("List is empty!");
 		if (size == 1)
 			head.setData(null);
-		else
+		else {
 			head = head.getNext();
+			head.setPrevious(null);
+		}
 		size--;
 	}
-
+	
 	public void deleteAtEnd() throws Exception {
 		if (size == 0)
 			throw new Exception("List is empty!");
 		if (size == 1)
 			last.setData(null);
 		else {
-			last = null;
-			SinglyNode<T> temp = head;
-			while (temp.getNext() != null) {
-				temp = temp.getNext();
-			}
-			last = temp;
+			DoublyNode<T> newLast = last.getPrevious();
+			newLast.setNext(null);
+			last = newLast;
 		}
 		size--;
 	}
-
+	
 	public void deleteAtPosition(int position) throws Exception {
 		if (size == 0)
 			throw new Exception("List is empty!");
@@ -133,29 +162,18 @@ public class SinglyLinkedList<T> {
 			deleteAtEnd();
 		else {
 			int index = 0;
-			SinglyNode<T> temp = head, next;
+			DoublyNode<T> temp = head, next;
 			while (temp.getNext() != null) {
 				index++;
 				if (index == position) {
 					next = temp.getNext().getNext();
 					temp.setNext(next);
+					if(next!=null)
+						next.setPrevious(temp);
 					break;
 				}
 				temp = temp.getNext();
 			}
 		}
 	}
-
-	@Override
-	public String toString() {
-		String result = "";
-		SinglyNode<T> temp = head;
-		while (temp.getNext() != null) {
-			result += temp.getData() + " ";
-			temp = temp.getNext();
-		}
-		result += temp.getData() + "\n";
-		return result;
-	}
-
 }
